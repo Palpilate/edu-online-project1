@@ -1,0 +1,29 @@
+#微服务配置
+spring:
+  application:
+    name: media-api
+  cloud:
+    nacos:
+      server-addr: 192.168.101.65:8848
+      discovery:
+        namespace: develop
+        group: edu-online-project
+      config:
+        namespace: develop
+        group: edu-online-project
+        file-extension: yaml
+        refresh-enabled: true
+        extension-configs:
+          - data-id: media-service-${spring.profiles.active}.yaml
+            group: edu-online-project
+            refresh: true
+        shared-configs:
+          - data-id: swagger-${spring.profiles.active}.yaml
+            group: edu-online-common
+            refresh: true
+          - data-id: logging-${spring.profiles.active}.yaml
+            group: edu-online-common
+            refresh: true
+  profiles:
+    active: develop
+

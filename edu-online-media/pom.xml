@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <artifactId>edu-online-parent</artifactId>
+        <groupId>com.eduonline</groupId>
+        <version>0.0.1-SNAPSHOT</version>
+        <relativePath>../edu-online-parent</relativePath>
+    </parent>
+    <artifactId>edu-online-media</artifactId>
+    <name>edu-online-media</name>
+    <description>edu-online-media</description>
+    <packaging>pom</packaging>
+
+    <modules>
+        <module>edu-online-media-api</module>
+        <module>edu-online-media-service</module>
+        <module>edu-online-media-model</module>
+    </modules>
+</project>
