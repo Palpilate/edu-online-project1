@@ -6,7 +6,7 @@ import lombok.ToString;
 /**
  * @description 通用结果类型
  * @author Anesthesia
- * @date 2023/3/23 14:44
+ * @date 2023/9/13 14:44
  * @version 1.0
  */
 

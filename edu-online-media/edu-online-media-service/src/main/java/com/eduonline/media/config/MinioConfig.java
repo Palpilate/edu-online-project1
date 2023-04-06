@@ -6,7 +6,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 /**
- * @author Anesthsia
+ * @author Anesthesia
  * @version 1.0
  * @description TODO
  * @date 2023/3/22 15:00

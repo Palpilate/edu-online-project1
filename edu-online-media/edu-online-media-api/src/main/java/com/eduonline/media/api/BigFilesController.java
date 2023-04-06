@@ -14,10 +14,10 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.File;
 
 /**
- * @author Anesthsia
+ * @author Anesthesia
  * @version 1.0
  * @description 上传视频
- * @date 2023/3/22 10:34
+ * @date 2023/3/18 10:34
  */
 
 @Api(value = "大文件上传接口", tags = "大文件上传接口")

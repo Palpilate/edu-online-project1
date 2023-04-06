@@ -32,15 +32,13 @@ public class UploadFileParamsDto {
      * 标签
      */
     private String tags;
-
     /**
      * 上传人
      */
     private String username;
-
     /**
      * 备注
-     *  */
+     */
     private String remark;
 
- }
+}
