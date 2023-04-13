@@ -1,5 +1,6 @@
 package com.eduonline.content.api;
 
+import com.eduonline.content.model.dto.BindTeachplanMediaDto;
 import com.eduonline.content.model.dto.SaveTeachplanDto;
 import com.eduonline.content.model.dto.TeachplanDto;
 import com.eduonline.content.service.TeachplanService;
@@ -36,6 +37,12 @@ public class TeachplanController {
     @PostMapping("/teachplan")
     public void saveTeachplan( @RequestBody SaveTeachplanDto teachplan){
         teachplanService.saveTeachplan(teachplan);
+    }
+
+    @ApiOperation(value = "课程计划和媒资信息绑定")
+    @PostMapping("/teachplan/association/media")
+    public void associationMedia(@RequestBody BindTeachplanMediaDto bindTeachplanMediaDto){
+        teachplanService.associationMedia(bindTeachplanMediaDto);
     }
 
 }

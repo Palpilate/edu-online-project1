@@ -1,5 +1,6 @@
 package com.eduonline.content.service;
 
+import com.eduonline.content.model.dto.BindTeachplanMediaDto;
 import com.eduonline.content.model.dto.SaveTeachplanDto;
 import com.eduonline.content.model.dto.TeachplanDto;
 
@@ -24,4 +25,10 @@ public interface TeachplanService {
   * @param saveTeachplanDto
   */
  public void saveTeachplan(SaveTeachplanDto saveTeachplanDto);
+
+ /**
+  * @description 教学计划绑定媒资
+  * @param bindTeachplanMediaDto
+  */
+ public void associationMedia(BindTeachplanMediaDto bindTeachplanMediaDto);
 }
