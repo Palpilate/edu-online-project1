@@ -2,6 +2,8 @@ package com.eduonline.media.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.eduonline.media.mapper.MediaProcessMapper;
+import com.eduonline.media.model.po.MediaProcess;
 import com.j256.simplemagic.ContentInfo;
 import com.j256.simplemagic.ContentInfoUtil;
 import com.eduonline.base.exception.EduOnlineException;
@@ -14,6 +16,7 @@ import com.eduonline.media.model.dto.UploadFileParamsDto;
 import com.eduonline.media.model.dto.UploadFileResultDto;
 import com.eduonline.media.model.po.MediaFiles;
 import com.eduonline.media.service.MediaFileService;
+
 import io.minio.*;
 import io.minio.messages.DeleteError;
 import io.minio.messages.DeleteObject;
@@ -49,6 +52,9 @@ public class MediaFileServiceImpl implements MediaFileService {
     MediaFilesMapper mediaFilesMapper;
 
     @Autowired
+    MediaProcessMapper mediaProcessMapper;
+
+    @Autowired
     MinioClient minioClient;
 
     @Autowired
@@ -61,6 +67,8 @@ public class MediaFileServiceImpl implements MediaFileService {
     //存储视频
     @Value("${minio.bucket.videofiles}")
     private String bucket_video;
+
+
 
     @Override
     public PageResult<MediaFiles> queryMediaFiels(Long companyId, PageParams pageParams, QueryMediaParamsDto queryMediaParamsDto) {
@@ -118,8 +126,8 @@ public class MediaFileServiceImpl implements MediaFileService {
             log.debug("上传文件到minio成功,bucket:{},objectName:{},错误信息:{}",bucket,objectName);
             return true;
         } catch (Exception e) {
-           e.printStackTrace();
-           log.error("上传文件出错,bucket:{},objectName:{},错误信息:{}",bucket,objectName,e.getMessage());
+            e.printStackTrace();
+            log.error("上传文件出错,bucket:{},objectName:{},错误信息:{}",bucket,objectName,e.getMessage());
         }
         return false;
     }
@@ -138,6 +146,31 @@ public class MediaFileServiceImpl implements MediaFileService {
         } catch (Exception e) {
             e.printStackTrace();
             return null;
+        }
+    }
+
+    /**
+     * 添加待处理任务
+     * @param mediaFiles    媒资文件信息
+     */
+    private void addWaitingTask(MediaFiles mediaFiles){
+
+        // 文件名称
+        String filename = mediaFiles.getFilename();
+        // 文件拓展名
+        String extension = filename.substring(filename.lastIndexOf("."));
+        // 获取文件的mimetype
+        String mimeType = getMimeType(extension);
+        if (mimeType.equals("video/x-msvideo")){    // 如果文件是avi格式，写入待处理任务
+            MediaProcess mediaProcess = new MediaProcess();
+            BeanUtils.copyProperties(mediaFiles,mediaProcess);
+
+            // 状态是未处理
+            mediaProcess.setStatus("1");
+            mediaProcess.setCreateDate(LocalDateTime.now());
+            mediaProcess.setFailCount(0);// 默认失败次数为0
+            mediaProcess.setUrl(null);
+            mediaProcessMapper.insert(mediaProcess);
         }
     }
 
@@ -217,6 +250,8 @@ public class MediaFileServiceImpl implements MediaFileService {
                 log.debug("向数据库保存文件失败,bucket:{},objectName:{}",bucket,objectName);
                 return null;
             }
+            // 记录待处理任务
+            addWaitingTask(mediaFiles);
             return mediaFiles;
 
         }
@@ -301,17 +336,22 @@ public class MediaFileServiceImpl implements MediaFileService {
         //分块文件所在目录
         String chunkFileFolderPath = getChunkFileFolderPath(fileMd5);
         //找到所有的分块文件
-        List<ComposeSource> sources = Stream.iterate(0, i -> ++i).limit(chunkTotal).map(i -> ComposeSource.builder().bucket(bucket_video).object(chunkFileFolderPath + i).build()).collect(Collectors.toList());
+        List<ComposeSource> sources = Stream.iterate(0, i -> ++i).limit(chunkTotal)
+                .map(i -> ComposeSource.builder()
+                        .bucket(bucket_video)
+                        .object(chunkFileFolderPath + i)
+                        .build())
+                .collect(Collectors.toList());
         //源文件名称
         String filename = uploadFileParamsDto.getFilename();
         //扩展名
         String extension = filename.substring(filename.lastIndexOf("."));
-        //合并后文件的objectname
-        String objectName = getFilePathByMd5(fileMd5, extension);
+        //合并后文件的路径
+        String mergeFilePath = getFilePathByMd5(fileMd5, extension);
         //指定合并后的objectName等信息
         ComposeObjectArgs composeObjectArgs = ComposeObjectArgs.builder()
                 .bucket(bucket_video)
-                .object(objectName)//合并后的文件的objectname
+                .object(mergeFilePath)//合并后的文件的路径
                 .sources(sources)//指定源文件
                 .build();
         //===========合并文件============
@@ -320,13 +360,13 @@ public class MediaFileServiceImpl implements MediaFileService {
             minioClient.composeObject(composeObjectArgs);
         } catch (Exception e) {
             e.printStackTrace();
-            log.error("合并文件出错,bucket:{},objectName:{},错误信息:{}",bucket_video,objectName,e.getMessage());
+            log.error("合并文件出错,bucket:{},objectName:{},错误信息:{}",bucket_video,mergeFilePath,e.getMessage());
             return RestResponse.validfail(false,"合并文件异常");
         }
 
         //===========校验合并后的和源文件是否一致，视频上传才成功===========
         //先下载合并后的文件
-        File file = downloadFileFromMinIO(bucket_video, objectName);
+        File file = downloadFileFromMinIO(bucket_video, mergeFilePath);
         try(FileInputStream fileInputStream = new FileInputStream(file)){
             //计算合并后文件的md5
             String mergeFile_md5 = DigestUtils.md5Hex(fileInputStream);
@@ -342,7 +382,7 @@ public class MediaFileServiceImpl implements MediaFileService {
         }
 
         //==============将文件信息入库============
-        MediaFiles mediaFiles = currentProxy.addMediaFilesToDb(companyId, fileMd5, uploadFileParamsDto, bucket_video, objectName);
+        MediaFiles mediaFiles = currentProxy.addMediaFilesToDb(companyId, fileMd5, uploadFileParamsDto, bucket_video, mergeFilePath);
         if(mediaFiles == null){
             return RestResponse.validfail(false,"文件入库失败");
         }

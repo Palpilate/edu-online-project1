@@ -8,6 +8,8 @@ import com.eduonline.media.model.dto.UploadFileParamsDto;
 import com.eduonline.media.model.dto.UploadFileResultDto;
 import com.eduonline.media.model.po.MediaFiles;
 
+import java.io.File;
+
 /**
  * @description 媒资文件管理业务类
  * @author Anesthesia
@@ -79,5 +81,15 @@ public interface MediaFileService {
   * @date 2023/9/13 15:56
   */
  public RestResponse mergechunks(Long companyId,String fileMd5,int chunkTotal,UploadFileParamsDto uploadFileParamsDto);
+
+ public  boolean addMediaFilesToMinIO(String localFilePath, String mimeType, String bucket, String objectName);
+
+ /**
+  * 从minio下载文件
+  * @param bucket 桶
+  * @param objectName 对象名称
+  * @return  下载后的文件
+  */
+ public File downloadFileFromMinIO(String bucket, String objectName);
 
 }
