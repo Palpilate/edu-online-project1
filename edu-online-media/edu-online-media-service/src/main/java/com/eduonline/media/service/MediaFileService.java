@@ -44,7 +44,7 @@ public interface MediaFileService {
   * @param fileMd5 文件的md5
   * @return com.eduonline.base.model.RestResponse<java.lang.Boolean> false不存在，true存在
   * @author Anesthesia
-  * @date 2023/9/13 15:38
+  * @date 2023/3/15 15:38
   */
  public RestResponse<Boolean> checkFile(String fileMd5);
 
@@ -54,7 +54,7 @@ public interface MediaFileService {
   * @param chunkIndex  分块序号
   * @return com.eduonline.base.model.RestResponse<java.lang.Boolean> false不存在，true存在
   * @author Anesthesia
-  * @date 2023/9/13 15:39
+  * @date 2023/3/15 15:39
   */
  public RestResponse<Boolean> checkChunk(String fileMd5, int chunkIndex);
 
@@ -65,7 +65,7 @@ public interface MediaFileService {
   * @param localChunkFilePath  分块文件本地路径
   * @return com.eduonline.base.model.RestResponse
   * @author Anesthesia
-  * @date 2023/9/13 15:50
+  * @date 2023/3/15 15:50
   */
  public RestResponse uploadChunk(String fileMd5,int chunk,String localChunkFilePath);
 
@@ -78,7 +78,7 @@ public interface MediaFileService {
   * @param uploadFileParamsDto 文件信息
   * @return com.eduonline.base.model.RestResponse
   * @author Anesthesia
-  * @date 2023/9/13 15:56
+  * @date 2023/3/15 15:56
   */
  public RestResponse mergechunks(Long companyId,String fileMd5,int chunkTotal,UploadFileParamsDto uploadFileParamsDto);
 

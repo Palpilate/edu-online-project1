@@ -7,8 +7,6 @@ import com.eduonline.media.service.MediaFileService;
 import com.xxl.job.core.context.XxlJobHelper;
 import com.xxl.job.core.handler.annotation.XxlJob;
 import lombok.extern.slf4j.Slf4j;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -16,7 +14,10 @@ import org.springframework.stereotype.Component;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
-import java.util.concurrent.*;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 /**
  * 任务处理类
@@ -117,7 +118,8 @@ public class VideoTask {
                     }
 
                     // 上传到minio
-                    boolean b1 = mediaFileService.addMediaFilesToMinIO(mp4File.getAbsolutePath(), "video/mp4", bucket, objectName);
+                    String objectNameMp4 = getFilePath(fileId, ".mp4");
+                    boolean b1 = mediaFileService.addMediaFilesToMinIO(mp4File.getAbsolutePath(), "video/mp4", bucket, objectNameMp4);
                     if (!b1){
                         log.debug("上传MP4到minio失败，taskid:{}",taskId);
                         mediaFileProcessService.saveProcessFinishStatus(taskId,"3",fileId,null,"上传MP4到minio失败");
