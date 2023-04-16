@@ -12,7 +12,7 @@ import org.springframework.stereotype.Service;
  * 课程营销信息 服务实现类
  * </p>
  *
- * @author Anesthsia
+ * @author Anesthesia
  */
 @Slf4j
 @Service

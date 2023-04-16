@@ -8,7 +8,7 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
  *  Mapper 接口
  * </p>
  *
- * @author Anesthsia
+ * @author Anesthesia
  */
 public interface TeachplanMediaMapper extends BaseMapper<TeachplanMedia> {
 

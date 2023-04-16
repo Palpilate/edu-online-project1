@@ -11,7 +11,7 @@ import java.util.List;
  * 课程计划 Mapper 接口
  * </p>
  *
- * @author Anesthsia
+ * @author Anesthesia
  */
 public interface TeachplanMapper extends BaseMapper<Teachplan> {
 

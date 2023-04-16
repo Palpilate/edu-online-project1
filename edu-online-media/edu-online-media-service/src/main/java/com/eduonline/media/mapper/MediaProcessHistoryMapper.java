@@ -8,7 +8,7 @@ import com.eduonline.media.model.po.MediaProcessHistory;
  *  Mapper 接口
  * </p>
  *
- * @author Anesthsia
+ * @author Anesthesia
  */
 public interface MediaProcessHistoryMapper extends BaseMapper<MediaProcessHistory> {
 

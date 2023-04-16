@@ -39,7 +39,7 @@ public class CommonCodeGenerator {
 		GlobalConfig gc = new GlobalConfig();
 		gc.setFileOverride(true);
 		gc.setOutputDir(System.getProperty("user.dir") + "/edu-online-generator/src/main/java");
-		gc.setAuthor("Anesthsia");
+		gc.setAuthor("Anesthesia");
 		gc.setOpen(false);
 		gc.setSwagger2(false);
 		gc.setServiceName("%sService");

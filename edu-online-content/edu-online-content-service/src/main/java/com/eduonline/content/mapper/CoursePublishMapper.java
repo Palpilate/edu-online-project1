@@ -8,7 +8,7 @@ import com.eduonline.content.model.po.CoursePublish;
  * 课程发布 Mapper 接口
  * </p>
  *
- * @author Anesthsia
+ * @author Anesthesia
  */
 public interface CoursePublishMapper extends BaseMapper<CoursePublish> {
 

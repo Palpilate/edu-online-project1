@@ -11,7 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
  * 课程发布 前端控制器
  * </p>
  *
- * @author Anesthsia
+ * @author Anesthesia
  */
 @Slf4j
 @RestController

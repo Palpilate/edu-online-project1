@@ -8,7 +8,7 @@ import com.eduonline.media.model.po.MqMessage;
  *  Mapper 接口
  * </p>
  *
- * @author Anesthsia
+ * @author Anesthesia
  */
 public interface MqMessageMapper extends BaseMapper<MqMessage> {
 

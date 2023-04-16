@@ -8,7 +8,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
  * 课程基本信息 服务类
  * </p>
  *
- * @author Anesthsia
+ * @author Anesthesia
  * @since 2023-02-11
  */
 public interface CourseBaseService extends IService<CourseBase> {

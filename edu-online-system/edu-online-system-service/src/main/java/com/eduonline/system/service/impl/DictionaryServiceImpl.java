@@ -15,7 +15,7 @@ import java.util.List;
  * 数据字典 服务实现类
  * </p>
  *
- * @author Anesthsia
+ * @author Anesthesia
  */
 @Slf4j
 @Service

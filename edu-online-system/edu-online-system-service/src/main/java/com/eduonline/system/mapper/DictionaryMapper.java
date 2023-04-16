@@ -8,7 +8,7 @@ import com.eduonline.system.model.po.Dictionary;
  * 数据字典 Mapper 接口
  * </p>
  *
- * @author Anesthsia
+ * @author Anesthesia
  */
 public interface DictionaryMapper extends BaseMapper<Dictionary> {
 

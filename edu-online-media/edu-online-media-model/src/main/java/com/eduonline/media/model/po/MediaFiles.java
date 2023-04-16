@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
  * 媒资信息
  * </p>
  *
- * @author Anesthsia
+ * @author Anesthesia
  */
 @Data
 @TableName("media_files")
