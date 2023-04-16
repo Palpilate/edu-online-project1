@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
  * 
  * </p>
  *
- * @author Anesthsia
+ * @author Anesthesia
  */
 @Data
 @ToString

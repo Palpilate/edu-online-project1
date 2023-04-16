@@ -18,7 +18,7 @@ public interface MediaFileProcessService {
      * @param shardTotal    分片总数
      * @param count         获取记录数
      * @return  java.util.List<com.eduonline.media.model.po.MediaProcess>
-     * @author Anesthsia
+     * @author Anesthesia
      * @date 2023/3/23 14:26
      */
     public List<MediaProcess> getMediaProcessList(int shardIndex, int shardTotal, int count);

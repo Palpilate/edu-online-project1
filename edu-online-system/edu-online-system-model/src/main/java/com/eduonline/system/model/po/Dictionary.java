@@ -12,7 +12,7 @@ import java.io.Serializable;
  * 数据字典
  * </p>
  *
- * @author Anesthsia
+ * @author Anesthesia
  */
 @Data
 @TableName("dictionary")

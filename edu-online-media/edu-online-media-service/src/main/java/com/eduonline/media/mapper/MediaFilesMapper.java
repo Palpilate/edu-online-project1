@@ -8,7 +8,7 @@ import com.eduonline.media.model.po.MediaFiles;
  * 媒资信息 Mapper 接口
  * </p>
  *
- * @author Anesthsia
+ * @author Anesthesia
  */
 public interface MediaFilesMapper extends BaseMapper<MediaFiles> {
 

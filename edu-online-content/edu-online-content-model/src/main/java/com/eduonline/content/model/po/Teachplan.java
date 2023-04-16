@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
  * 课程计划
  * </p>
  *
- * @author Anesthsia
+ * @author Anesthesia
  */
 @Data
 @TableName("teachplan")

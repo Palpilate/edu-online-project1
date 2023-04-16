@@ -11,7 +11,7 @@ import java.util.List;
  * 课程分类 Mapper 接口
  * </p>
  *
- * @author Anesthsia
+ * @author Anesthesia
  */
 public interface CourseCategoryMapper extends BaseMapper<CourseCategory> {
 

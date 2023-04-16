@@ -15,7 +15,7 @@ import java.util.List;
  * 数据字典 前端控制器
  * </p>
  *
- * @author Anesthsia
+ * @author Anesthesia
  */
 @Slf4j
 @RestController

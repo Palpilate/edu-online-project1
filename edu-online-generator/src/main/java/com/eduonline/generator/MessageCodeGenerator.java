@@ -50,7 +50,7 @@ public class MessageCodeGenerator {
 		gc.setFileOverride(true);
 		//生成路径
 		gc.setOutputDir(System.getProperty("user.dir") + "/edu-online-generator/src/main/java");
-		gc.setAuthor("Anesthsia");
+		gc.setAuthor("Anesthesia");
 		gc.setOpen(false);
 		gc.setSwagger2(false);
 		gc.setServiceName("%sService");
