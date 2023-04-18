@@ -2,6 +2,8 @@ package com.eduonline.content.service;
 
 import com.eduonline.content.model.dto.CoursePreviewDto;
 
+import java.io.File;
+
 /**
  /**
  * @author Anesthesia
@@ -25,7 +27,7 @@ public interface CoursePublishService {
      * @param companyId 机构id
      * @param courseId  课程id
      * @author Anesthesia
-     * @date 2023/3/28/18:54
+     * @date 2023/3/28 18:54
      */
     public void commitAudit(Long companyId, Long courseId);
 
@@ -34,7 +36,25 @@ public interface CoursePublishService {
      * @param companyId
      * @param courseId
      * @author Anesthesia
-     * @date 2023/3/29/10:54
+     * @date 2023/3/29 10:54
      */
     public void publish(Long companyId, Long courseId);
+
+    /**
+     * @description  课程静态化
+     * @param courseId  课程id
+     * @return  File 静态文件
+     * @author Anesthesia
+     * @date 2023/3/30 9:12
+     */
+    public File generateCourseHtml(Long courseId);
+
+    /**
+     * @description  课程静态化
+     * @param courseId
+     * @param file
+     * @author Anesthesia
+     * @date 2023/3/30 9:12
+     */
+    public void uploadCourseHtml(Long courseId, File file);
 }

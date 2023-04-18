@@ -4,6 +4,8 @@ package com.eduonline.content.service.impl;
 import com.alibaba.fastjson.JSON;
 import com.eduonline.base.exception.CommonError;
 import com.eduonline.base.exception.EduOnlineException;
+import com.eduonline.content.config.MultipartSupportConfig;
+import com.eduonline.content.feignclient.MediaServiceClient;
 import com.eduonline.content.mapper.CourseBaseMapper;
 import com.eduonline.content.mapper.CourseMarketMapper;
 import com.eduonline.content.mapper.CoursePublishMapper;
@@ -20,14 +22,23 @@ import com.eduonline.content.service.CoursePublishService;
 import com.eduonline.content.service.TeachplanService;
 import com.eduonline.messagesdk.model.po.MqMessage;
 import com.eduonline.messagesdk.service.MqMessageService;
+import freemarker.template.Configuration;
+import freemarker.template.Template;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.ui.freemarker.FreeMarkerTemplateUtils;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.InputStream;
 import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -60,6 +71,9 @@ public class CoursePublishServiceImpl implements CoursePublishService {
 
     @Autowired
     MqMessageService mqMessageService;
+
+    @Autowired
+    MediaServiceClient mediaServiceClient;
 
     @Override
     public CoursePreviewDto getCoursePreviewInfo(Long courseId) {
@@ -186,6 +200,63 @@ public class CoursePublishServiceImpl implements CoursePublishService {
 
         // 将预发布表的数据删除
         coursePublishPreMapper.deleteById(courseId);
+    }
+
+    @Override
+    public File generateCourseHtml(Long courseId) {
+        Configuration configuration = new Configuration(Configuration.getVersion());
+        // 最终的静态文件载体
+        File htmlFile=null;
+
+        try {
+            // 拿到classpath路径
+            String classpath = this.getClass().getResource("/").getPath();
+            // 指定一下模板的目录
+            configuration.setDirectoryForTemplateLoading(new File(classpath + "/templates/"));
+            // 指定得到模板文件的编码格式为utf-8
+            configuration.setDefaultEncoding("utf-8");
+            // 得到模板,就是获取html页面的代码
+            Template template = configuration.getTemplate("course_template.ftl");
+
+            // 准备数据 coursePreviewInfo这个直接放入freemakertemplateUtils中会有问题 需要先建个map
+            CoursePreviewDto coursePreviewInfo = this.getCoursePreviewInfo(courseId);
+            HashMap<String, Object> map = new HashMap<>();
+            map.put("model",coursePreviewInfo);
+
+            // html页面代码字符串化 所需参数： Template template 模板,Object model 数据
+            String html = FreeMarkerTemplateUtils.processTemplateIntoString(template, map);
+
+            // 输入流
+            InputStream inputStream = IOUtils.toInputStream(html, "utf-8");
+            // 输出文件
+            htmlFile= File.createTempFile("coursepublishtemp",".html"); // 生成临时文件
+            FileOutputStream outputStream = new FileOutputStream(htmlFile);
+            // 使用流将html写入文件,拷贝流
+            IOUtils.copy(inputStream,outputStream);
+        }catch (Exception e){
+            log.error("页面静态化出现问题，课程id:{}", courseId);
+            e.printStackTrace();
+        }
+
+
+        return htmlFile;
+    }
+
+    @Override
+    public void uploadCourseHtml(Long courseId, File file) {
+
+        try {
+            MultipartFile multipartFile = MultipartSupportConfig.getMultipartFile(file);
+            String upload = mediaServiceClient.upload(multipartFile, "course/"+courseId+".html");
+            if (upload == null){
+                log.debug("远程调用走了降级逻辑处理，得到的上传结果为null，课程id:{}", courseId);
+                EduOnlineException.cast("上传静态文件过程中存在异常");
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+            EduOnlineException.cast("上传静态文件过程中存在异常");
+        }
+
     }
 
     /**

@@ -40,9 +40,10 @@ public interface MediaFileService {
   * @param companyId 机构id
   * @param uploadFileParamsDto 文件信息
   * @param localFilePath 文件本地路径
+  * @param objectName 如果传入objectname要按objectname的目录去存储，如果没有传入则按照年月日目录结构存储
   * @return UploadFileResultDto
   */
- public UploadFileResultDto uploadFile(Long companyId, UploadFileParamsDto uploadFileParamsDto, String localFilePath);
+ public UploadFileResultDto uploadFile(Long companyId, UploadFileParamsDto uploadFileParamsDto, String localFilePath,String objectName);
 
  public MediaFiles addMediaFilesToDb(Long companyId,String fileMd5,UploadFileParamsDto uploadFileParamsDto,String bucket,String objectName);
 

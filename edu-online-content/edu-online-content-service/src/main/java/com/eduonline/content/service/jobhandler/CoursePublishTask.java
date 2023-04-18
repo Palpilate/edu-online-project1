@@ -1,12 +1,22 @@
 package com.eduonline.content.service.jobhandler;
 
+import com.eduonline.base.exception.EduOnlineException;
+import com.eduonline.content.feignclient.CourseIndex;
+import com.eduonline.content.feignclient.SearchServiceClient;
+import com.eduonline.content.mapper.CoursePublishMapper;
+import com.eduonline.content.model.po.CoursePublish;
+import com.eduonline.content.service.CoursePublishService;
 import com.eduonline.messagesdk.model.po.MqMessage;
 import com.eduonline.messagesdk.service.MessageProcessAbstract;
 import com.eduonline.messagesdk.service.MqMessageService;
 import com.xxl.job.core.context.XxlJobHelper;
 import com.xxl.job.core.handler.annotation.XxlJob;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
+import java.io.File;
 
 /**
  * @author Anesthesia
@@ -17,6 +27,12 @@ import org.springframework.stereotype.Component;
 @Slf4j
 @Component
 public class CoursePublishTask extends MessageProcessAbstract {
+    @Autowired
+    CoursePublishService coursePublishService;
+    @Autowired
+    SearchServiceClient searchServiceClient;
+    @Autowired
+    CoursePublishMapper coursePublishMapper;
     
     // 任务调度入口
     @XxlJob("CoursePublishJobHandler")
@@ -64,8 +80,17 @@ public class CoursePublishTask extends MessageProcessAbstract {
             return;
         }
 
-        int i = 1/0;// 造个异常看看
-        // 开始进行课程静态化
+//        int i = 1/0;// 造个异常看看
+        // 开始进行课程静态化 生成html页面
+        File file = coursePublishService.generateCourseHtml(courseId);
+        if (file == null){
+            EduOnlineException.cast("生成的静态页面为空");
+        }
+
+        // 将得到的html文件上传到minio中
+        coursePublishService.uploadCourseHtml(courseId,file);
+
+
 
         // .. 任务处理完成写任务状态为完成
         mqMessageService.completedStageOne(taskId);
@@ -85,6 +110,16 @@ public class CoursePublishTask extends MessageProcessAbstract {
             return;
         }
         // 查询课程信息，调用搜索服务添加索引……
+        // 从课程发布表中查询到课程信息
+        CoursePublish coursePublish = coursePublishMapper.selectById(courseId);
+
+        CourseIndex courseIndex = new CourseIndex();
+        BeanUtils.copyProperties(coursePublish,courseIndex);
+        // 远程调用
+        Boolean add = searchServiceClient.add(courseIndex);
+        if (!add){
+            EduOnlineException.cast("远程调用搜索服务，该课程索引信息添加失败");
+        }
 
         // 完成本阶段的任务
         mqMessageService.completedStageTwo(taskId);

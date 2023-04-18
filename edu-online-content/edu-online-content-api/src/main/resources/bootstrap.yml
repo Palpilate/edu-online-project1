@@ -31,6 +31,9 @@ spring:
           - data-id: freemarker-config-${spring.profiles.active}.yaml
             group: edu-online-common
             refresh: true
+          - data-id: feign-${spring.profiles.active}.yaml
+            group: edu-online-common
+            refresh: true
 
 
 #  datasource:
